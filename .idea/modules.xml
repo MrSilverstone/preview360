@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/preview360.iml" filepath="$PROJECT_DIR$/preview360.iml" />
+      <module fileurl="file://$PROJECT_DIR$/previewgenerator/previewgenerator.iml" filepath="$PROJECT_DIR$/previewgenerator/previewgenerator.iml" />
     </modules>
   </component>
 </project>

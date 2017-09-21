@@ -1,6 +1,6 @@
 #pragma version(1)
 #pragma rs_fp_relaxed
-#pragma rs java_package_name(com.tools.louis.preview360)
+#pragma rs java_package_name(com.tools.louis.previewgenerator)
 
 float2 Size;
 
@@ -12,8 +12,6 @@ const float3 cDir = {0.0, 0.0, -1.0};
 const float3 cUp = {0.0, 1.0, 0.0};
 const float targetDepth = 1.0;
 const float3 lightDirection = {-0.577, 0.577, 0.577};
-
-#define M_PI 3.14159265358979323846
 
 typedef struct intersection
 {
@@ -31,11 +29,11 @@ typedef struct sphere
 
 Sphere sphere;
 
-static void intersectSphere(float3 ray, Sphere s, Intersection *i)
+inline static void intersect(float3 ray, Intersection *i)
 {
-	float3 a = cPos - s.position;
+	float3 a = cPos - sphere.position;
 	float b = dot(a, ray);
-	float c = dot(a, a) - (s.radius * s.radius);
+	float c = dot(a, a) - (sphere.radius * sphere.radius);
 	float d = b * b - c;
 	if (d > 0.0)
 	{
@@ -47,21 +45,15 @@ static void intersectSphere(float3 ray, Sphere s, Intersection *i)
 			i->hitPoint.x = cPos.x + ray.x * t;
 			i->hitPoint.y = cPos.y + ray.y * t;
 			i->hitPoint.z = cPos.z + ray.z * t;
-			i->normal = normalize(i->hitPoint - s.position);
+			i->normal = normalize(i->hitPoint - sphere.position);
 		}
 	}
 }
 
-static void intersect(float3 ray, Intersection *i)
+uchar4 __attribute__((kernel)) preview360(uchar4 pixelIn, uint32_t x, uint32_t y)
 {
-	intersectSphere(ray, sphere, i);
-}
 
-uchar4 __attribute__((kernel)) grayscale(uchar4 pixelIn, uint32_t x, uint32_t y)
-{
 	uchar4 pixelOut;
-
-
 	float2 fragCoord = {x, y};
 
 	float2 p = (fragCoord.xy * 2.0 - Size) / min(Size.x, Size.y);
@@ -113,7 +105,6 @@ uchar4 __attribute__((kernel)) grayscale(uchar4 pixelIn, uint32_t x, uint32_t y)
         float4 s = rsSample(texture, sampler, texCoord);
         pixelOut = rsPackColorTo8888(s);
 
-
 		//       	fragColor = float4(texture(iChannel0, float2(u, v)).rgb, 1.0);
 	}
 	else
@@ -130,5 +121,5 @@ uchar4 __attribute__((kernel)) grayscale(uchar4 pixelIn, uint32_t x, uint32_t y)
 
 void init()
 {
-	rsDebug("Hello 2", 0);
+	rsDebug("Hello from library 1", 0);
 }
